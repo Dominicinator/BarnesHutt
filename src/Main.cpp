@@ -27,6 +27,7 @@ struct Body : Particle {
 };
 //template <int nBodies>
 class Simulation {
+public:
 	float posRange;
 	float massLower;
 	float massHigher;
@@ -81,6 +82,8 @@ int main() {
 	//std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
 	//std::cout << sizeof(Tree::Node<Particle>) << std::endl;
 	Simulation sim(1E9f, 1E20, 1E22, 50, 1);
+	std::cout << sim.bodies[0].position << std::endl;
 	sim.step();
+	std::cout << sim.bodies[0].position << std::endl;
 	std::cin.get();
 };
