@@ -31,13 +31,16 @@ namespace Tree {
 			}
 		}
 	public:
+		inline bool isEmptyExternal() {
+			return (!hasChildren() && !hasParticle());
+		}
 		inline bool hasChildren() {
 			return children[0] != nullptr;
 		}
 		inline bool hasParent() {
 			return parent != nullptr;
 		}
-		inline bool isLeaf() {
+		inline bool hasParticle() {
 			return particle != nullptr;
 		}
 		bool contains(const vec2f& p) {
@@ -59,7 +62,7 @@ namespace Tree {
 			children[3] = new Node<Particle>(this, position - vec2f(size / 2, -size / 2), size / 2);
 		}
 		void insert(Particle* const& b) {
-			if (!isLeaf()) {
+			if (!hasParticle()) {
 				if (!hasChildren()) {
 					particle = b;
 				}
@@ -114,7 +117,7 @@ namespace Tree {
 				for (Node* const& child : children)
 					child->getCOM(outposition, outmass);
 			}
-			else {
+			else if (hasParticle()){
 				outposition = particle->position;
 				outmass = particle->mass;
 			}

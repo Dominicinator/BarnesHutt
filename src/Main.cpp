@@ -4,6 +4,13 @@
 #include <thread>
 #include <vector>
 const float G = 6.67408E-11f;
+float RandomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
+
 struct Particle {
 	float mass;
 	vec2f position;
@@ -35,15 +42,19 @@ private:
 	vec2f recursiveBH(Tree::Node<Particle>* node) const{
 		
 		if (!node->hasChildren()) {//node is external
-			if (node->particle) //external node is empty
+			if (node->particle == NULL) //external node is empty
 				return vec2f();//return 0, 0
 			else { //external node is not empty
+				if (node->particle->position == this->position) {
+					return vec2f();
+				}
 				vec2f distanceVector = node->particle->position - this->position;
 				float myMass = this->mass;
 				float otherMass = node->particle->mass;
 				//float d2 = distanceVector.mag2();
 				//float d = std::sqrt(d2);
-				return distanceVector.norm()*(G*otherMass / (distanceVector.mag2()*myMass));
+				std::cout << "PP:" << distanceVector.norm()*(G*otherMass / (distanceVector.mag2())) << "\n";
+				return distanceVector.norm()*(G*otherMass / (distanceVector.mag2()));
 			}
 		}
 		else {//node is internal
@@ -55,6 +66,10 @@ private:
 				float COMmass;
 				node->getCOM(COMpos, COMmass);
 				//return PPinteraction(mass, COMmass, d);
+				//std::cout << "norm: " << d.norm() << "\n";
+				//std::cout << "mu: " << G * COMmass << "\n";
+				//std::cout << "r^2: " << d.mag2() << "\n";
+				std::cout << "PCOM:" << d.norm()*(G*COMmass / (d.mag2())) << "\n";
 				return d.norm()*(G*COMmass / (d.mag2()*this->mass));
 			}
 			else {
@@ -66,27 +81,31 @@ private:
 	}
 };
 int main() {
-	namespace Q = Tree;
-	const unsigned int nBodies = 4;
+	const float posRange = 1E9;
+	const float massLower = 1E23f;
+	const float massHigher = 1E26f;
+	const unsigned int nBodies = 50;
 	Body* bodies = new Body[nBodies];
 	//Body** bodyptrs = new Body*[nBodies];
 	Particle* bodyptrs[nBodies];
 	for (int i = 0; i < nBodies; i++) {
-		bodies[i].position = vec2f::random(-100.0f, 100.0f);
+		bodies[i].position = vec2f::random(-posRange, posRange);
+		bodies[i].mass = RandomFloat(massLower, massHigher);
 		bodyptrs[i] = &bodies[i];
 	}
 	//Body* bodyptrss = (Body*)bodyptrs;
 	
-	Q::BHtree<Particle> tree;
+	Tree::BHtree<Particle> tree;
 	tree.fill(bodyptrs);
 	std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
 	std::cout << sizeof(Particle) * nBodies / 1000000.0f << "Mb of particles" << std::endl;
-	std::cout << sizeof(Q::Node<Particle>) * tree.countNodes() / 1000000.0f << "Mb of nodes" << std::endl;
-	std::cout << sizeof(Q::Node<Particle>) << std::endl;
+	std::cout << sizeof(Tree::Node<Particle>) * tree.countNodes() / 1000000.0f << "Mb of nodes" << std::endl;
+	std::cout << sizeof(Tree::Node<Particle>) << std::endl;
 
 	//std::cin.get();
-	vec2f acc = bodies[0].getAccelerationBH(tree);
-	std::cout << acc.x << ", " << acc.y << std::endl;
+	vec2f acc = bodies[14].getAccelerationBH(tree);
+	std::cout << "pos: " << bodies[14].position << std::endl;
+	std::cout << "total acceleration: " << acc << std::endl;
 
 
 	tree.clear();

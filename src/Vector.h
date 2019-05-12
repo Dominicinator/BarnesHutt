@@ -173,3 +173,11 @@ struct vec2f {
 			lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower))));
 	}
 };
+std::ostream& operator<<(std::ostream& stream, const vec2f & v) {
+	stream << "(" << v.x << ", " << v.y << ")";
+	return stream;
+}
+std::ostream& operator<<(std::ostream& stream, const vec3f & v) {
+	stream << "(" << v.x << ", " << v.y << ", " << v.x << ")";
+	return stream;
+}
