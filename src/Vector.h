@@ -9,10 +9,10 @@ struct vec3f {
 		x(x_), y(y_), z(0) {}
 	vec3f(float x_, float y_, float z_) :
 		x(x_), y(y_), z(z_) {}
-	vec3f operator - () const {
+	const vec3f operator - () const {
 		return vec3f(-x, -y, -z);
 	}
-	vec3f operator + (const vec3f& v) const{
+	const vec3f operator + (const vec3f& v) const{
 		return vec3f(x + v.x, y + v.y, z + v.z);
 	}
 	void operator += (const vec3f& v) {
@@ -20,7 +20,7 @@ struct vec3f {
 		y += v.y;
 		z += v.z;
 	}
-	vec3f operator - (const vec3f& v) const{
+	const vec3f operator - (const vec3f& v) const{
 		return vec3f(x - v.x, y - v.y, z - v.z);
 	}
 	void operator -= (const vec3f& v) {
@@ -29,15 +29,15 @@ struct vec3f {
 		z -= v.z;
 	}
 	//scalar multiplication
-	vec3f operator * (const float& s) const{
+	const vec3f operator * (const float& s) const{
 		return vec3f(x*s, y*s, z*s);
 	}
 	//dot
-	float operator * (const vec3f& v) const{
+	const float operator * (const vec3f& v) const{
 		return x * v.x + y * v.y + z * v.z;
 	}
 	//scalar division
-	vec3f operator / (const float& s) const{
+	const vec3f operator / (const float& s) const{
 		return vec3f(x / s, y / s, z / s);
 	}
 	void operator /= (const float& s) {
@@ -46,41 +46,41 @@ struct vec3f {
 		z /= s;
 	}
 	//cross
-	vec3f operator / (const vec3f& v) const{
+	const vec3f operator / (const vec3f& v) const{
 		return vec3f(x, y, z);
 	}
-	bool operator == (const vec3f& v) const {
+	const bool operator == (const vec3f& v) const {
 		return (x == v.x && y == v.y && z == v.z);
 	}
-	bool operator < (const float& s) const{
+	const bool operator < (const float& s) const{
 		return x < s && y < s && z < s;
 	}
-	bool operator <= (const float& s) const {
+	const bool operator <= (const float& s) const {
 		return x < s && y < s && z <= s;
 	}
-	bool operator > (const float& s) const{
+	const bool operator > (const float& s) const{
 		return x > s && y > s && z > s;
 	}
-	bool operator >= (const float& s) const {
+	const bool operator >= (const float& s) const {
 		return x >= s && y >= s && z >= s;
 	}
-	bool less2d(const float& s) const {
+	const bool less2d(const float& s) const {
 		return x < s && y < s;
 	}
-	bool great2d(const float& s) const {
+	const bool great2d(const float& s) const {
 		return x > s && y > s;
 	}
-	vec3f abs() {
+	const vec3f abs() const {
 		return vec3f(std::abs(x), std::abs(y), std::abs(z));
 	}
-	vec3f norm() {
+	const vec3f norm() const{
 		return vec3f(x / std::sqrt(x*x + y * y + z * z), y / std::sqrt(x*x + y * y + z * z), z / std::sqrt(x*x + y * y + z * z));
 	}
-	float mag2() {
+	const float mag2() const {
 		//return inline (*this)*(*this)
 		return x * x + y * y + z * z;
 	}
-	float mag() {
+	const float mag() const {
 		return std::sqrt(x*x + y * y + z * z);
 	}
 	static vec3f random(float lower, float higher) {
@@ -97,17 +97,17 @@ struct vec2f {
 		x(x_), y(y_), z(0) {}
 	vec2f(float x_, float y_, float z_) :
 		x(x_), y(y_), z(z_) {}
-	vec2f operator - () const {
+	const vec2f operator - () const {
 		return vec2f(-x, -y);
 	}
-	vec2f operator + (const vec2f& v) const {
+	const vec2f operator + (const vec2f& v) const {
 		return vec2f(x + v.x, y + v.y);
 	}
 	void operator += (const vec2f& v) {
 		x += v.x;
 		y += v.y;
 	}
-	vec2f operator - (const vec2f& v) const {
+	const vec2f operator - (const vec2f& v) const {
 		return vec2f(x - v.x, y - v.y);
 	}
 	void operator -= (const vec2f& v) {
@@ -115,15 +115,15 @@ struct vec2f {
 		y -= v.y;
 	}
 	//scalar multiplication
-	vec2f operator * (const float& s) const {
+	const vec2f operator * (const float& s) const {
 		return vec2f(x*s, y*s);
 	}
 	//dot
-	float operator * (const vec2f& v) const {
+	const float operator * (const vec2f& v) const {
 		return x * v.x + y * v.y;
 	}
 	//scalar division
-	vec2f operator / (const float& s) const {
+	const vec2f operator / (const float& s) const {
 		return vec2f(x / s, y / s);
 	}
 	void operator /= (const float& s) {
@@ -131,41 +131,41 @@ struct vec2f {
 		y /= s;
 	}
 	//cross
-	vec2f operator / (const vec2f& v) const {
+	const vec2f operator / (const vec2f& v) const {
 		return vec2f(x, y);
 	}
-	bool operator == (const vec2f& v) const {
+	const bool operator == (const vec2f& v) const {
 		return (x == v.x && y == v.y);
 	}
-	bool operator < (const float& s) const {
+	const bool operator < (const float& s) const {
 		return x < s && y < s;
 	}
-	bool operator <= (const float& s) const {
+	const bool operator <= (const float& s) const {
 		return x < s && y < s;
 	}
-	bool operator > (const float& s) const {
+	const bool operator > (const float& s) const {
 		return x > s && y > s;
 	}
-	bool operator >= (const float& s) const {
+	const bool operator >= (const float& s) const {
 		return x >= s && y >= s;
 	}
-	bool less2d(const float& s) const {
+	const bool less2d(const float& s) const {
 		return x < s && y < s;
 	}
-	bool great2d(const float& s) const {
+	const bool great2d(const float& s) const {
 		return x > s && y > s;
 	}
-	vec2f abs() {
+	const vec2f abs() const {
 		return vec2f(std::abs(x), std::abs(y));
 	}
-	vec2f norm() {
+	const vec2f norm() const {
 		return vec2f(x / std::sqrt(x*x + y * y + z * z), y / std::sqrt(x*x + y * y + z * z));
 	}
-	float mag2() {
+	const float mag2() const {
 		//return inline (*this)*(*this)
 		return x * x + y * y;
 	}
-	float mag() {
+	const float mag() const {
 		return std::sqrt(x*x + y * y);
 	}
 	static vec2f random(float lower, float higher) {
