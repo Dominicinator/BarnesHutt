@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector.h"
 #include <vector>
+const float G = 6.67408E-11f;
 namespace Tree {
 	template <typename Particle>
 	struct Node {
@@ -128,22 +129,23 @@ namespace Tree {
 	class BHtree {
 	public:
 		Node<Particle>* root;
+		float rootSize;
+		vec2f rootPos;
 	public:
 		BHtree() :
 			root(nullptr) {}
 
 		BHtree(Node<Particle>* const& rt) :
 			root(rt) {}
-
-		template <size_t N>
-		BHtree(Particle* (&particleptrs)[N]) :
-			root(fit(particleptrs)) {}
-
+		BHtree(Particle* const& particles, int nParticles) :
+			root(new Node<Particle>) {
+			fit(particles, nParticles);
+		}
 		void insert(Particle* const& particleptr) {
 			root->insert(particleptr);
 		}
 		void insert(const Particle& particle) {
-			root->insert((Particle*)&particle);
+			root->insert(&particle);
 		}
 		
 	public:
@@ -156,80 +158,44 @@ namespace Tree {
 		}
 	public:
 		void clear() {
-			delete root; //deleting a node deletes all of its children recursively.
-			root = nullptr;
-		}
-		template <size_t N>
-		void fill(Particle* (&particleptrs)[N]) {
-			root = fit(particleptrs);
-			for (Particle* const& particleptr : particleptrs) {
-				insert(particleptr);
+			for (auto const& child : root->children) {
+				delete child; //deleting a node deletes all of its children recursively.
+				child = nullptr;
 			}
 		}
-		template <size_t N>
-		void fill(Particle particles[N]) {
-			root = fit(particles);
-			for (const Particle& particle : particles) {
-				insert(particle);
+		void fill(Particle* const& particles, int nParticles) {
+			fit(particles, nParticles);
+			for (int i = 0; i < nParticles; i++) {
+				insert(particles[i]);
 			}
 		}
-		void fill(Particle** const& particleptrs) {
-			root = fit(particleptrs);
-			for (Particle* const& particleptr : particleptrs) {
-				insert(particleptr);
+		void fill_nofit(Particle* const& bodies, int nParticles) {
+			for (int i = 0; i < nParticles; i++) {
+				insert(bodies[i]);
 			}
 		}
-		Node<Particle>* fit(Particle** const& particleptrs) {
+		void fit(Particle* const& particles, int nParticles) {
 			vec2f center;
-			vec2f magMax;
-			return new Node<Particle>(center, magMax);
+			float magMax;
+			for (int i = 0; i < nParticles; i++) {
+				center += particles[i].position;
+			}
+			center /= nParticles;
+			for (int i = 0; i < nParticles; i++) {
+				magMax = particles[i].position.mag() > magMax ? particles[i].position.mag() : magMax;
+			}
+			rootPos = center;
+			rootSize = magMax;
+			root->position = center;
+			root->size = magMax;
 		}
-		template <size_t N>
-		Node<Particle>* fit(Particle* (&particleptrs)[N]) const {
-			vec2f center = vec2f();
-			for (Particle* const& particleptr : particleptrs) {
-				center += particleptr->position;
-			}
-			center /= N;
-			float magMax = 0.0f;
-			for (Particle* const& particleptr : particleptrs) {
-				magMax = particleptr->position.mag() > magMax ? particleptr->position.mag() : magMax;
-			}
-			return new Node<Particle>(center, magMax);
-		}
-		template <size_t N>
-		Node<Particle>* fit(std::vector<Particle*> particleptrs[N]) const {
-			vec2f center = vec2f();
-			for (Particle* const& particleptr : particleptrs) {
-				center += particleptr->position;
-			}
-			center /= N;
-			float magMax = 0.0f;
-			for (Particle* const& particleptr : particleptrs) {
-				magMax = particleptr->position.mag() > magMax ? particleptr->position.mag() : magMax;
-			}
-			return new Node<Particle>(center, magMax);
-		}
-		template <size_t N>
-		Node<Particle>* fit(Particle particles[N]) const {
-			vec2f center = vec2f();
-			for (Particle const& particle : particles) {
-				center += particle.position;
-			}
-			center /= N;
-			float magMax = 0.0f;
-			for (Particle const& particle : particles) {
-				float tempMag = particle.position.mag();
-				magMax = tempMag > magMax ? tempMag : magMax;
-			}
-			return new Node<Particle>(center, magMax);
-		}
+		
 	public:
-		vec2f getAcceleration(const vec2f& pos) {
+		const vec2f getAcceleration(const vec2f& pos) const {
 			return _getAcceleration(root, pos);
 		}
 	private:
-		vec2f _getAcceleration(Tree::Node<Particle>* node, const vec2f& pos) const {
+		const vec2f _getAcceleration(Tree::Node<Particle>* const& node, const vec2f& pos) const {
 
 			if (!node->hasChildren()) {//node is external
 				if (node->particle == NULL) //external node is empty

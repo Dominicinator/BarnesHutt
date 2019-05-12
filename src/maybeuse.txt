@@ -1,28 +1,64 @@
-struct Nodedir {
-	float size;
-	vec3f position;
-	Node* parent;
-	//Node* children[4] = { nullptr, nullptr, nullptr, nullptr };
-	Node* NW;
-	Node* NE;
-	Node* SW;
-	Node* SE;
-	Body* body;
-public:
-	Nodedir() : size(0), position(vec3f()), parent(nullptr), body(nullptr) {}
-	Nodedir(Node* const p) : size(0), position(vec3f()), parent(p), body(nullptr) {}
-	Nodedir(Node* const p, const vec3f& pos, const float& s) : size(s), position(pos), parent(p), body(nullptr) {}
-	~Nodedir() {
-		//deallocate
-	}
-public:
-	void subdivide() {
-
-	}
-	void insert() {
-
-	}
-	void destroy() {
-
-	}
-};
+template <size_t N>
+		void fill(Particle* (&particleptrs)[N]) {
+			root = fit(particleptrs);
+			for (Particle* const& particleptr : particleptrs) {
+				insert(particleptr);
+			}
+		}
+		template <size_t N>
+		void fill(Particle particles[N]) {
+			root = fit(particles);
+			for (const Particle& particle : particles) {
+				insert(particle);
+			}
+		}
+		void fill(Particle** const& particleptrs) {
+			root = fit(particleptrs);
+			for (Particle* const& particleptr : particleptrs) {
+				insert(particleptr);
+			}
+		}
+		Node<Particle>* fit(Particle** const& particleptrs) {
+			vec2f center;
+			vec2f magMax;
+			return new Node<Particle>(center, magMax);
+		}
+		template <size_t N>
+		Node<Particle>* fit(Particle* (&particleptrs)[N]) const {
+			vec2f center = vec2f();
+			for (Particle* const& particleptr : particleptrs) {
+				center += particleptr->position;
+			}
+			center /= N;
+			float magMax = 0.0f;
+			for (Particle* const& particleptr : particleptrs) {
+				magMax = particleptr->position.mag() > magMax ? particleptr->position.mag() : magMax;
+			}
+			return new Node<Particle>(center, magMax);
+		}
+		template <size_t N>
+		Node<Particle>* fit(std::vector<Particle*> particleptrs[N]) const {
+			vec2f center = vec2f();
+			for (Particle* const& particleptr : particleptrs) {
+				center += particleptr->position;
+			}
+			center /= N;
+			float magMax = 0.0f;
+			for (Particle* const& particleptr : particleptrs) {
+				magMax = particleptr->position.mag() > magMax ? particleptr->position.mag() : magMax;
+			}
+			return new Node<Particle>(center, magMax);
+		}
+		template <size_t N>
+		Node<Particle>* fit(Particle particles[N]) const {
+			vec2f center = vec2f();
+			for (Particle const& particle : particles) {
+				center += particle.position;
+			}
+			center /= N;
+			float magMax = 0.0f;
+			for (Particle const& particle : particles) {
+				float tempMag = particle.position.mag();
+				magMax = tempMag > magMax ? tempMag : magMax;
+			}
+			return new Node<Particle>(center, magMax);
