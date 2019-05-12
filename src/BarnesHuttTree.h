@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector.h"
-namespace QuadTree {
+namespace Tree {
 	template <typename Body>
 	struct Node {
 		float size;
@@ -58,7 +58,7 @@ namespace QuadTree {
 			children[3] = new Node<Body>(this, position - vec2f(size / 2, -size / 2), size / 2);
 		}
 		void insert(Body* const& b) {
-			if (body == nullptr) {
+			if (!isLeaf()) {
 				if (!hasChildren()) {
 					body = b;
 				}
@@ -92,10 +92,8 @@ namespace QuadTree {
 			}
 			else if (hasParent())
 				n++;
-
-			for (Node<Body>* const& child : children) {
+			for (Node<Body>* const& child : children)
 				n += child->countDescendants();
-			}
 			return n;
 		}
 		void print() {
