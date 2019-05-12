@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Vector.h"
+#include "BarnesHuttTree.h"
 struct Body {
 	vec2f position;
 	Body() :
@@ -187,6 +188,7 @@ public:
 
 };
 int main() {
+	namespace Q = QuadTree;
 	const unsigned int nBodies = 50000;
 	Body bodies[nBodies];
 	Body* bodyptrs[nBodies];
@@ -195,7 +197,7 @@ int main() {
 		bodyptrs[i] = &bodies[i];
 	}
 	
-	BHtree tree;
+	Q::BHtree<Body> tree;
 	tree.fill(bodyptrs);
 	std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
 	std::cout << sizeof(Body) * nBodies / 1000000.0f << "Mb of bodies" << std::endl;

@@ -5,8 +5,8 @@ namespace QuadTree {
 	struct Node {
 		float size;
 		vec2f position;
-		Node* parent;
-		Node* children[4] = { nullptr, nullptr, nullptr, nullptr };
+		Node<Body>* parent;
+		Node<Body>* children[4] = { nullptr, nullptr, nullptr, nullptr };
 		Body* body;
 	public:
 		Node() :
@@ -15,16 +15,16 @@ namespace QuadTree {
 		Node(const vec2f pos, const float s) :
 			size(s), position(pos), parent(nullptr), body(nullptr) {}
 
-		Node(Node* const p) :
+		Node(Node<Body>* const p) :
 			size(0), position(vec2f()), parent(p), body(nullptr) {}
 
-		Node(Node* const p, const vec2f& pos, const float& s) :
+		Node(Node<Body>* const p, const vec2f& pos, const float& s) :
 			size(s), position(pos), parent(p), body(nullptr) {}
 
 		~Node() {
 			//std::cout << "deleted" << std::endl;
 			if (hasChildren()) {
-				for (Node*& child : children) {
+				for (Node<Body>*& child : children) {
 					delete child;
 				}
 			}
@@ -49,13 +49,13 @@ namespace QuadTree {
 		}
 		void subdivide() {
 			//NW
-			children[0] = new Node(this, position - vec2f(-size / 2, size / 2), size / 2);
+			children[0] = new Node<Body>(this, position - vec2f(-size / 2, size / 2), size / 2);
 			//NE
-			children[1] = new Node(this, position - vec2f(size / 2, size / 2), size / 2);
+			children[1] = new Node<Body>(this, position - vec2f(size / 2, size / 2), size / 2);
 			//SW
-			children[2] = new Node(this, position - vec2f(-size / 2, -size / 2), size / 2);
+			children[2] = new Node<Body>(this, position - vec2f(-size / 2, -size / 2), size / 2);
 			//SE
-			children[3] = new Node(this, position - vec2f(size / 2, -size / 2), size / 2);
+			children[3] = new Node<Body>(this, position - vec2f(size / 2, -size / 2), size / 2);
 		}
 		void insert(Body* const& b) {
 			if (body == nullptr) {
@@ -63,7 +63,7 @@ namespace QuadTree {
 					body = b;
 				}
 				else {
-					for (Node*& child : children) {
+					for (Node<Body>*& child : children) {
 						if (child->contains(b))
 							child->insert(b);
 					}
@@ -73,7 +73,7 @@ namespace QuadTree {
 				if (!hasChildren()) {
 					subdivide();
 				}
-				for (Node* child : children) {
+				for (Node<Body>* child : children) {
 					if (child->contains(b))
 						child->insert(b);
 					if (child->contains(body))
@@ -93,7 +93,7 @@ namespace QuadTree {
 			else if (hasParent())
 				n++;
 
-			for (Node* const& child : children) {
+			for (Node<Body>* const& child : children) {
 				n += child->countDescendants();
 			}
 			return n;
@@ -104,7 +104,7 @@ namespace QuadTree {
 		void printchildren() {
 			//if (children[0] != nullptr) {
 			if (hasChildren()) {
-				for (Node* child : children) {
+				for (Node<Body>* child : children) {
 					child->print();
 				}
 			}
@@ -113,12 +113,12 @@ namespace QuadTree {
 	template <typename Body>
 	class BHtree {
 	public:
-		Node* root;
+		Node<Body>* root;
 	public:
 		BHtree() :
 			root(nullptr) {}
 
-		BHtree(Node* const& rt) :
+		BHtree(Node<Body>* const& rt) :
 			root(rt) {}
 
 		template <size_t N>
@@ -154,7 +154,7 @@ namespace QuadTree {
 			}
 		}
 		template <size_t N>
-		Node* fit(Body* (&bodyptrs)[N]) const {
+		Node<Body>* fit(Body* (&bodyptrs)[N]) const {
 			vec2f center = vec2f();
 			for (Body* const& bodyptr : bodyptrs) {
 				center += bodyptr->position;
@@ -164,10 +164,10 @@ namespace QuadTree {
 			for (Body* const& bodyptr : bodyptrs) {
 				magMax = bodyptr->position.mag() > magMax ? bodyptr->position.mag() : magMax;
 			}
-			return new Node(center, magMax);
+			return new Node<Body>(center, magMax);
 		}
 		template <size_t N>
-		Node* fit(Body bodies[N]) const {
+		Node<Body>* fit(Body bodies[N]) const {
 			vec2f center = vec2f();
 			for (Body const& body : bodies) {
 				center += body.position;
@@ -178,8 +178,7 @@ namespace QuadTree {
 				float tempMag = body.position.mag();
 				magMax = tempMag > magMax ? tempMag : magMax;
 			}
-			return new Node(center, magMax);
+			return new Node<Body>(center, magMax);
 		}
-
 	};
 }
