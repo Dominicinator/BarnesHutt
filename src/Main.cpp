@@ -20,8 +20,8 @@ struct Particle {
 };
 struct Body : Particle {
 	vec2f velocity;
-	template<typename T>
-	void update(Tree::BHtree<Particle> tree, const vec2f(T::*accelerationFunction)(const vec2f&), float deltaTime) {
+	//template<typename T>
+	void update(Tree::BHtree<Particle> tree, const vec2f(Tree::BHtree<Particle>::*accelerationFunction)(const vec2f&) const, float deltaTime) {
 		return;
 	}
 };
@@ -48,9 +48,13 @@ public:
 	void step() {
 		tree.fill(bodies, nBodies);
 		for (int i = 0; i < nBodies; i++) {
-			auto accFunc = &Tree::BHtree<Particle>::getAcceleration;
-			std::cout << accFunc << std::endl;
-			//bodies[i].update(tree, &tree.getAcceleration, deltaTime);
+			typedef Tree::BHtree<Particle> QT;
+			//auto accFunc = &Tree::BHtree<Particle>::getAcceleration;
+			//auto accFunc = tree.getAcceleration;
+			const vec2f (QT::*accFunc)(const vec2f&) const = &QT::getAcceleration; // get a pointer to tree.getAcceleration
+			//auto accFunc = &QT::getAcceleration;
+			//std::cout << accFunc << std::endl;
+			bodies[i].update(tree, accFunc, deltaTime);
 		}
 		tree.clear();
 	}
@@ -77,5 +81,6 @@ int main() {
 	//std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
 	//std::cout << sizeof(Tree::Node<Particle>) << std::endl;
 	Simulation sim(1E9f, 1E20, 1E22, 50, 1);
+	sim.step();
 	std::cin.get();
 };
