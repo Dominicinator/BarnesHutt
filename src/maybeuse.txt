@@ -1,0 +1,28 @@
+struct Nodedir {
+	float size;
+	vec3f position;
+	Node* parent;
+	//Node* children[4] = { nullptr, nullptr, nullptr, nullptr };
+	Node* NW;
+	Node* NE;
+	Node* SW;
+	Node* SE;
+	Body* body;
+public:
+	Nodedir() : size(0), position(vec3f()), parent(nullptr), body(nullptr) {}
+	Nodedir(Node* const p) : size(0), position(vec3f()), parent(p), body(nullptr) {}
+	Nodedir(Node* const p, const vec3f& pos, const float& s) : size(s), position(pos), parent(p), body(nullptr) {}
+	~Nodedir() {
+		//deallocate
+	}
+public:
+	void subdivide() {
+
+	}
+	void insert() {
+
+	}
+	void destroy() {
+
+	}
+};
