@@ -20,7 +20,8 @@ struct Particle {
 };
 struct Body : Particle {
 	vec2f velocity;
-	void update(Tree::BHtree<Particle> tree, const vec2f(*accelerationFunction)(const vec2f&), float deltaTime) {
+	template<typename T>
+	void update(Tree::BHtree<Particle> tree, const vec2f(T::*accelerationFunction)(const vec2f&), float deltaTime) {
 		return;
 	}
 };
@@ -33,46 +34,48 @@ class Simulation {
 	float deltaTime;
 	Body* bodies;
 	Tree::BHtree<Particle> tree;
-	Simulation(float posrange, float masslower, float masshigher, int nbodies, float deltatime) : posRange(posrange), massLower(masslower), massHigher(masshigher), nBodies(nbodies), deltaTime(deltatime) {
-		bodies = new Body[nBodies];
+public:
+	Simulation(float posrange, float masslower, float masshigher, int nbodies, float deltatime) :
+		posRange(posrange), massLower(masslower), massHigher(masshigher), nBodies(nbodies), deltaTime(deltatime), bodies(new Body[nBodies]), tree(Tree::BHtree<Particle>(bodies, nBodies)) {
+		//
+		;
 		for (int i = 0; i < nBodies; i++) {
 			bodies[i].position = vec2f::random(-posRange, posRange);
 			bodies[i].mass = RandomFloat(massLower, massHigher);
 		}
+		tree.fit(bodies, nBodies);
 	}
 	void step() {
 		tree.fill(bodies, nBodies);
 		for (int i = 0; i < nBodies; i++) {
-			std::cout << tree.getAcceleration << std::endl;
-			bodies[i].update(tree, tree.getAcceleration, deltaTime);
+			auto accFunc = &Tree::BHtree<Particle>::getAcceleration;
+			std::cout << accFunc << std::endl;
+			//bodies[i].update(tree, &tree.getAcceleration, deltaTime);
 		}
 		tree.clear();
 	}
 };
 int main() {
-	const float posRange = 1E9;
-	const float massLower = 1E23f;
-	const float massHigher = 1E26f;
-	const unsigned int nBodies = 50;
-	Body* bodies = new Body[nBodies];
-	for (int i = 0; i < nBodies; i++) {
-		bodies[i].position = vec2f::random(-posRange, posRange);
-		bodies[i].mass = RandomFloat(massLower, massHigher);
-	}
-	
-	Tree::BHtree<Particle> tree;
-	tree.fill(bodies, nBodies);
-	std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
-	std::cout << sizeof(Particle) * nBodies / 1000000.0f << "Mb of particles" << std::endl;
-	std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
-	std::cout << sizeof(Tree::Node<Particle>) << std::endl;
-
-	
-
-
-	
-	
-	
-	std::cout << "Tree cleared" << std::endl;
+	//const float posRange = 1E9;
+	//const float massLower = 1E23f;
+	//const float massHigher = 1E26f;
+	//const unsigned int nBodies = 50;
+	//Body* bodies = new Body[nBodies];
+	//for (int i = 0; i < nBodies; i++) {
+	//	bodies[i].position = vec2f::random(-posRange, posRange);
+	//	bodies[i].mass = RandomFloat(massLower, massHigher);
+	//}
+	//
+	////Tree::BHtree<Particle> tree;
+	////tree.fill(bodies, nBodies);
+	//Tree::BHtree<Particle> tree(bodies, nBodies);
+	//tree.fill(bodies, nBodies);
+	//tree.clear();
+	//tree.fill(bodies, nBodies);
+	//std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
+	//std::cout << sizeof(Particle) * nBodies / 1000000.0f << "Mb of particles" << std::endl;
+	//std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
+	//std::cout << sizeof(Tree::Node<Particle>) << std::endl;
+	Simulation sim(1E9f, 1E20, 1E22, 50, 1);
 	std::cin.get();
 };

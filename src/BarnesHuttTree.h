@@ -144,26 +144,31 @@ namespace Tree {
 		void insert(Particle* const& particleptr) {
 			root->insert(particleptr);
 		}
-		void insert(const Particle& particle) {
+		void insert(Particle& particle) {
 			root->insert(&particle);
 		}
-		
+	private:
+		void initRoot() {
+			root = new Node<Particle>;
+		}
 	public:
 		//Util
 		int countNodes() {
 			return root->countDescendants() + 1;
 		}
-		float getSize() {
+		unsigned int getSize() {
 			return sizeof(Particle)*countNodes();
 		}
 	public:
 		void clear() {
-			for (auto const& child : root->children) {
+			for (auto& child : root->children) {
 				delete child; //deleting a node deletes all of its children recursively.
 				child = nullptr;
 			}
 		}
 		void fill(Particle* const& particles, int nParticles) {
+			if (root == nullptr)
+				initRoot();
 			fit(particles, nParticles);
 			for (int i = 0; i < nParticles; i++) {
 				insert(particles[i]);
@@ -175,12 +180,12 @@ namespace Tree {
 			}
 		}
 		void fit(Particle* const& particles, int nParticles) {
-			vec2f center;
-			float magMax;
+			vec2f center = vec2f();
+			float magMax = 0;
 			for (int i = 0; i < nParticles; i++) {
 				center += particles[i].position;
 			}
-			center /= nParticles;
+			center /= (const float&)nParticles;
 			for (int i = 0; i < nParticles; i++) {
 				magMax = particles[i].position.mag() > magMax ? particles[i].position.mag() : magMax;
 			}
@@ -220,7 +225,7 @@ namespace Tree {
 				}
 				else {
 					for (Tree::Node<Particle>* const& child : node->children)
-						acc += _getAcceleration(child);
+						acc += _getAcceleration(child, pos);
 					return acc;
 				}
 			}
