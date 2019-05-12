@@ -145,8 +145,14 @@ namespace Tree {
 		void insert(const Particle& particle) {
 			root->insert((Particle*)&particle);
 		}
+		
+	public:
+		//Util
 		int countNodes() {
 			return root->countDescendants() + 1;
+		}
+		float getSize() {
+			return sizeof(Particle)*countNodes();
 		}
 	public:
 		void clear() {
@@ -167,11 +173,16 @@ namespace Tree {
 				insert(particle);
 			}
 		}
-		void fill(std::vector<Particle*> particleptrs) {
+		void fill(Particle** const& particleptrs) {
 			root = fit(particleptrs);
 			for (Particle* const& particleptr : particleptrs) {
 				insert(particleptr);
 			}
+		}
+		Node<Particle>* fit(Particle** const& particleptrs) {
+			vec2f center;
+			vec2f magMax;
+			return new Node<Particle>(center, magMax);
 		}
 		template <size_t N>
 		Node<Particle>* fit(Particle* (&particleptrs)[N]) const {
@@ -212,6 +223,41 @@ namespace Tree {
 				magMax = tempMag > magMax ? tempMag : magMax;
 			}
 			return new Node<Particle>(center, magMax);
+		}
+	public:
+		vec2f getAcceleration(const vec2f& pos) {
+			return _getAcceleration(root, pos);
+		}
+	private:
+		vec2f _getAcceleration(Tree::Node<Particle>* node, const vec2f& pos) const {
+
+			if (!node->hasChildren()) {//node is external
+				if (node->particle == NULL) //external node is empty
+					return vec2f();//return 0, 0
+				else { //external node is not empty
+					if (node->particle->position == pos) {
+						return vec2f();
+					}
+					vec2f distanceVector = node->particle->position - pos;
+					return distanceVector.norm()*(G*node->particle->mass / (distanceVector.mag2()));
+				}
+			}
+			else {//node is internal
+				vec2f acc;
+				float s = node->size;
+				vec2f d = node->position - pos;
+				if ((node->size) / (d.mag()) < 0.5f) {
+					vec2f COMpos;
+					float COMmass;
+					node->getCOM(COMpos, COMmass);
+					return d.norm()*(G*COMmass / (d.mag2()));
+				}
+				else {
+					for (Tree::Node<Particle>* const& child : node->children)
+						acc += _getAcceleration(child);
+					return acc;
+				}
+			}
 		}
 	};
 }
