@@ -90,13 +90,11 @@ struct vec3f {
 	}
 };
 struct vec2f {
-	float x, y, z;
+	float x, y;
 	vec2f() :
-		x(0), y(0), z(0) {}
+		x(0), y(0) {}
 	vec2f(float x_, float y_) :
-		x(x_), y(y_), z(0) {}
-	vec2f(float x_, float y_, float z_) :
-		x(x_), y(y_), z(z_) {}
+		x(x_), y(y_) {}
 	const vec2f operator - () const {
 		return vec2f(-x, -y);
 	}
@@ -159,7 +157,7 @@ struct vec2f {
 		return vec2f(std::abs(x), std::abs(y));
 	}
 	const vec2f norm() const {
-		return vec2f(x / std::sqrt(x*x + y * y + z * z), y / std::sqrt(x*x + y * y + z * z));
+		return vec2f(x / std::sqrt(x*x + y * y), y / std::sqrt(x*x + y * y));
 	}
 	const float mag2() const {
 		//return inline (*this)*(*this)
@@ -169,8 +167,9 @@ struct vec2f {
 		return std::sqrt(x*x + y * y);
 	}
 	static vec2f random(float lower, float higher) {
-		return vec2f(lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower))),
-			lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower))));
+		float x_ = lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower)));
+		float y_ = lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower)));
+		return vec2f(x_, y_);
 	}
 };
 std::ostream& operator<<(std::ostream& stream, const vec2f & v) {
@@ -178,6 +177,6 @@ std::ostream& operator<<(std::ostream& stream, const vec2f & v) {
 	return stream;
 }
 std::ostream& operator<<(std::ostream& stream, const vec3f & v) {
-	stream << "(" << v.x << ", " << v.y << ", " << v.x << ")";
+	stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
 	return stream;
 }

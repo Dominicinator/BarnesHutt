@@ -62,3 +62,24 @@ template <size_t N>
 				magMax = tempMag > magMax ? tempMag : magMax;
 			}
 			return new Node<Particle>(center, magMax);
+
+//const float posRange = 1E9;
+	//const float massLower = 1E23f;
+	//const float massHigher = 1E26f;
+	//const unsigned int nBodies = 50;
+	//Body* bodies = new Body[nBodies];
+	//for (int i = 0; i < nBodies; i++) {
+	//	bodies[i].position = vec2f::random(-posRange, posRange);
+	//	bodies[i].mass = RandomFloat(massLower, massHigher);
+	//}
+	//
+	////Tree::BHtree<Particle> tree;
+	////tree.fill(bodies, nBodies);
+	//Tree::BHtree<Particle> tree(bodies, nBodies);
+	//tree.fill(bodies, nBodies);
+	//tree.clear();
+	//tree.fill(bodies, nBodies);
+	//std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
+	//std::cout << sizeof(Particle) * nBodies / 1000000.0f << "Mb of particles" << std::endl;
+	//std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
+	//std::cout << sizeof(Tree::Node<Particle>) << std::endl;

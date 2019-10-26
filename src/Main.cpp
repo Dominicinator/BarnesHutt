@@ -1,89 +1,60 @@
 #include <iostream>
-#include "Vector.h"
-#include "BarnesHuttTree.h"
-#include <thread>
-#include <vector>
+#include <GL/glew.h>
+#include "Simulation.h"
+#include <GLFW/glfw3.h>
 
-float RandomFloat(float a, float b) {
-	float random = ((float)rand()) / (float)RAND_MAX;
-	float diff = b - a;
-	float r = random * diff;
-	return a + r;
+//int main() {
+//	Simulation sim(1E9f, 1E20, 1E22, 50, 1000.0f);
+//	std::cout << sim.bodies[0].position << std::endl;
+//	sim.step();
+//	std::cout << sim.bodies[0].position << std::endl;
+//	std::cin.get();
+//};
+int main(void)
+{
+	GLFWwindow* window;
+
+	/* Initialize the library */
+	if (!glfwInit())
+		return -1;
+	/* Create a windowed mode window and its OpenGL context */
+	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
+
+	/* Make the window's context current */
+	glfwMakeContextCurrent(window);
+	if (glewInit() != GLEW_OK)
+		std::cout << "Error!" << std::endl;
+	/* Loop until the user closes the window */
+	int positions[6] = {
+		-0.5f, -0.5f,
+		 0.0f,  0.5f,
+		 0.5f, -0.5f
+	};
+	unsigned int buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+	glEnableVertexAttribArray(0);
+	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+	while (!glfwWindowShouldClose(window))
+	{
+		/* Render here */
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		/* Swap front and back buffers */
+		glfwSwapBuffers(window);
+
+		/* Poll for and process events */
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
+	return 0;
 }
-struct Particle {
-	float mass;
-	vec2f position;
-	Particle() :
-		position(vec2f()) {}
-	Particle(vec2f pos) :
-		position(pos) {}
-};
-struct Body : Particle {
-	vec2f velocity;
-	//template<typename T>
-	void update(Tree::BHtree<Particle> tree, const vec2f(Tree::BHtree<Particle>::*accelerationFunction)(const vec2f&) const, float deltaTime) {
-		return;
-	}
-};
-//template <int nBodies>
-class Simulation {
-public:
-	float posRange;
-	float massLower;
-	float massHigher;
-	unsigned int nBodies;
-	float deltaTime;
-	Body* bodies;
-	Tree::BHtree<Particle> tree;
-public:
-	Simulation(float posrange, float masslower, float masshigher, int nbodies, float deltatime) :
-		posRange(posrange), massLower(masslower), massHigher(masshigher), nBodies(nbodies), deltaTime(deltatime), bodies(new Body[nBodies]), tree(Tree::BHtree<Particle>(bodies, nBodies)) {
-		//
-		;
-		for (int i = 0; i < nBodies; i++) {
-			bodies[i].position = vec2f::random(-posRange, posRange);
-			bodies[i].mass = RandomFloat(massLower, massHigher);
-		}
-		tree.fit(bodies, nBodies);
-	}
-	void step() {
-		tree.fill(bodies, nBodies);
-		for (int i = 0; i < nBodies; i++) {
-			typedef Tree::BHtree<Particle> QT;
-			//auto accFunc = &Tree::BHtree<Particle>::getAcceleration;
-			//auto accFunc = tree.getAcceleration;
-			const vec2f (QT::*accFunc)(const vec2f&) const = &QT::getAcceleration; // get a pointer to tree.getAcceleration
-			//auto accFunc = &QT::getAcceleration;
-			//std::cout << accFunc << std::endl;
-			bodies[i].update(tree, accFunc, deltaTime);
-		}
-		tree.clear();
-	}
-};
-int main() {
-	//const float posRange = 1E9;
-	//const float massLower = 1E23f;
-	//const float massHigher = 1E26f;
-	//const unsigned int nBodies = 50;
-	//Body* bodies = new Body[nBodies];
-	//for (int i = 0; i < nBodies; i++) {
-	//	bodies[i].position = vec2f::random(-posRange, posRange);
-	//	bodies[i].mass = RandomFloat(massLower, massHigher);
-	//}
-	//
-	////Tree::BHtree<Particle> tree;
-	////tree.fill(bodies, nBodies);
-	//Tree::BHtree<Particle> tree(bodies, nBodies);
-	//tree.fill(bodies, nBodies);
-	//tree.clear();
-	//tree.fill(bodies, nBodies);
-	//std::cout << "# of Nodes: " << tree.countNodes() << std::endl;
-	//std::cout << sizeof(Particle) * nBodies / 1000000.0f << "Mb of particles" << std::endl;
-	//std::cout << tree.getSize() / 1000000.0f << "Mb of nodes" << std::endl;
-	//std::cout << sizeof(Tree::Node<Particle>) << std::endl;
-	Simulation sim(1E9f, 1E20, 1E22, 50, 1);
-	std::cout << sim.bodies[0].position << std::endl;
-	sim.step();
-	std::cout << sim.bodies[0].position << std::endl;
-	std::cin.get();
-};
