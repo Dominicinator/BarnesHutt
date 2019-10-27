@@ -1,9 +1,31 @@
 #include <iostream>
-#include "Simulation.h"
-#include <SFML/Graphics.hpp>
+//#include "Simulation.h"
+#include "Node.h"
+struct Particle {
+	float position = 0.0f;
+};
+	
+int main() {
+	vec2f vector = vec2f();
+	Node<Particle> node(vec2f(0, 0), 100.0f);
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Title");
+	sf::Event event;
+	while (window.isOpen()) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		window.clear(sf::Color::Black);
+		node.draw(window);
+		window.display();
+	}
+	return 0;
+}
+/*
 inline float map(const float& a, const float& b, const float& c, const float& d, const float& x) {
 	return (x - a) * (d - c) / (d - a) + c;
 }
+
 int main() {
 	Simulation sim(1E9f, 1E20, 1E22, 2, 1000.0f);
 	std::cout << sim.bodies[0].position << std::endl;
@@ -43,3 +65,4 @@ int main() {
 	}
 	return 0;
 };
+*/

@@ -13,21 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Tree">
+      <UniqueIdentifier>{6cfdbbd1-5db7-4071-9e2e-3319fcb36673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vector">
+      <UniqueIdentifier>{7d27ad41-f265-4288-8d2b-3caf0e9f2136}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Node.cpp">
+      <Filter>Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vector.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BarnesHuttTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Simulation.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Node.h">
+      <Filter>Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BarnesHuttTree.hold">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector.h">
+      <Filter>vector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

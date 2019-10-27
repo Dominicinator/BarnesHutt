@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector.h"
 #include <vector>
+#include "..\Node.h"
 const float G = 6.67408E-11f;
 namespace Tree {
 	template <typename Particle>
@@ -35,6 +36,7 @@ namespace Tree {
 		inline bool isEmptyExternal() {
 			return (!hasChildren() && !hasParticle());
 		}
+		
 		inline bool hasChildren() {
 			return children[0] != nullptr;
 		}
