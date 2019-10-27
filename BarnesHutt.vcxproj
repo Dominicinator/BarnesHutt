@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\vector.cpp" />
+    <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Node.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\Tree.h" />
     <ClInclude Include="src\Vector.h" />
+    <ClInclude Include="src\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\maybeuse.txt" />

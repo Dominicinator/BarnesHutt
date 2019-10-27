@@ -35,8 +35,8 @@ public:
 	unsigned int getSize() {
 		return sizeof(Particle)*countNodes();
 	}
-	void draw(sf::RenderWindow& targetWindow) {
-		root->draw(targetWindow);
+	void draw(float scale, sf::RenderWindow& targetWindow) {
+		root->draw(scale, targetWindow);
 	}
 	void debugprint() {
 		if (root)
@@ -111,14 +111,14 @@ private:
 	const vec2f _getAcceleration(Node<Particle>* const& node, const vec2f& pos) const {
 
 		if (!node->hasChildren()) {//node is external
-			if (node->particle == NULL) //external node is empty
+			if (node->data == NULL) //external node is empty
 				return vec2f();//return 0, 0
 			else { //external node is not empty
-				if (node->particle->position == pos) {
+				if (node->data->position == pos) {
 					return vec2f();
 				}
-				vec2f distanceVector = node->particle->position - pos;
-				return distanceVector.norm()*(G*node->particle->mass / (distanceVector.mag2()));
+				vec2f distanceVector = node->data->position - pos;
+				return distanceVector.norm()*(G*node->data->mass / (distanceVector.mag2()));
 			}
 		}
 		else {//node is internal
@@ -126,9 +126,10 @@ private:
 			float s = node->size;
 			vec2f d = node->position - pos;
 			if ((node->size) / (d.mag()) < 0.5f) {
-				vec2f COMpos;
-				float COMmass;
+				vec2f COMpos = vec2f();
+				float COMmass = 0.0f;
 				node->getCOM(COMpos, COMmass);
+				d = COMpos - pos;
 				return d.norm()*(G*COMmass / (d.mag2()));
 			}
 			else {

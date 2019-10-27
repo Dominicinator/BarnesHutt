@@ -1,7 +1,7 @@
 #include <iostream>
-//#include "Simulation.h"
+#include "Simulation.h"
 #include "Tree.h"
-struct Particle {
+/*struct Particle {
 	vec2f position;
 	vec2f velocity;
 	float mass;
@@ -17,18 +17,38 @@ struct Particle {
 		circle.setFillColor(sf::Color::White);
 		targetWindow.draw(circle);
 	}
-};
-	
+};*/
 int main() {
+	float windowWidth = 800.0f;
+	float windowHeight = 800.0f;
+	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Title");
+	sf::Event event;
+	while (window.isOpen()) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		window.clear(sf::Color::Black);
+
+		sf::CircleShape circle(50.0f);
+		circle.setOrigin(50.0f, 50.0f);
+		window.draw(circle);
+
+		window.display();
+	}
+}
+/*
+int main() {
+	Simulation sim(1E9f, 1E20, 1E22, 5, 10000.0f);
 	sf::Font font;
 	font.loadFromFile("G:/dev/BarnesHutt/BarnesHutt/src/arial_narrow_7.ttf");
-	int particleCount = 0;
-	Particle particles[1000];
-	particleCount = 1;
-	particles[0] = Particle();
+	//int particleCount = 0;
+	//Particle particles[1000];
+	//particleCount = 1;
+	//particles[0] = Particle();
 
-	Tree<Particle> tree = Tree<Particle>();
-	tree.fill(particles, particleCount);
+	//Tree<Particle> tree = Tree<Particle>();
+	//tree.fill(particles, particleCount);
 	//Node<Particle> node(vec2f(0.0f, 0.0f), 100.0f);
 	float windowWidth = 800.0f;
 	float windowHeight = 800.0f;
@@ -40,7 +60,28 @@ int main() {
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
-			else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+		}
+		
+		
+		window.clear(sf::Color::Black);
+		window.setView(view);
+		if (sim.nBodies > 0) {
+			for (int i = 0; i < sim.nBodies; ++i) {
+				auto particle = sim.bodies[i];
+				particle.draw(1e-7f, 4e-5f, window);
+				particle.debugInfo(window, font);
+			}
+		}
+		sim.step();
+		sim.tree.draw(1e-7f, window);
+		//tree.fill(particles);
+		//tree.draw(window);
+		
+		window.display();
+	}
+	return 0;
+}*/
+/*else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 				int worldMouseX = sf::Mouse::getPosition(window).x - (int)windowWidth / 2 + cameraPosition.x;
 				int worldMouseY = sf::Mouse::getPosition(window).y - (int)windowWidth / 2 + cameraPosition.y;
 				particles[particleCount] = (Particle(vec2f(worldMouseX, worldMouseY)));
@@ -57,24 +98,8 @@ int main() {
 				
 				tree.fill(particles, particleCount);
 				tree.debugprint();
-			}
-				
-		}
-		
-		//if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		//	std::cout << "press!" << std::endl;
-		//}
-		//std::cout << worldMouseX << "," << worldMouseY << std::endl;
-		window.clear(sf::Color::Black);
-		window.setView(view);
-		if (particleCount > 0) {
-			for (auto particle : particles) {
-				particle.draw(window);
-			}
-		}
-		//tree.fill(particles);
-		tree.draw(window);
-		sf::Text mousePos(std::to_string(sf::Mouse::getPosition(window).x) + "," + std::to_string(sf::Mouse::getPosition(window).y), font);
+			}*/
+/*sf::Text mousePos(std::to_string(sf::Mouse::getPosition(window).x) + "," + std::to_string(sf::Mouse::getPosition(window).y), font);
 		mousePos.setPosition(-400, -400);
 		mousePos.setCharacterSize(16);
 		mousePos.setStyle(sf::Text::Bold);
@@ -87,11 +112,7 @@ int main() {
 		checkPos.setCharacterSize(16);
 		checkPos.setFillColor(sf::Color::White);
 		window.draw(mousePos);
-		window.draw(checkPos);
-		window.display();
-	}
-	return 0;
-}
+		window.draw(checkPos);*/
 /*
 inline float map(const float& a, const float& b, const float& c, const float& d, const float& x) {
 	return (x - a) * (d - c) / (d - a) + c;

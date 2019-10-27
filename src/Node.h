@@ -42,7 +42,7 @@ public:
 	}
 	void subdivide()
 	{
-		std::cout << "subdivided" << std::endl;
+		//std::cout << "subdivided" << std::endl;
 		//NW
 		children[0] = new Node<DataType>(this, position - vec2f(-size / 4, size / 4), size / 2);
 		//NE
@@ -52,12 +52,9 @@ public:
 		//SE
 		children[3] = new Node<DataType>(this, position - vec2f(size / 4, -size / 4), size / 2);
 	}
-	void insert(void* const& b) {
-
-	}
 	void insert(DataType* const& b)
 	{
-		std::cout << "insert" << std::endl;
+		//std::cout << "insert" << std::endl;
 		if (!contains(b)) {
 			return;
 		}
@@ -80,11 +77,11 @@ public:
 			}
 			for (Node<DataType>* child : children) {
 				if (child->contains(b)) {
-					std::cout << child << " contains " << b << std::endl;
+					//std::cout << child << " contains " << b << std::endl;
 					child->insert(b);
 				}
 				if (child->contains(data))
-					std::cout << child << " contains " << data << std::endl;
+					//std::cout << child << " contains " << data << std::endl;
 					child->insert(data);
 			}
 			data = nullptr;
@@ -115,14 +112,14 @@ public:
 			}
 		
 	}
-	void draw(sf::RenderWindow& targetWindow)
+	void draw(float scale, sf::RenderWindow& targetWindow)
 	{
-		sf::RectangleShape rect(sf::Vector2f(size, size));
-		rect.setOrigin(size / 2, size / 2);
-		rect.setPosition(position.x, position.y);
+		sf::RectangleShape rect(sf::Vector2f(size * scale, size * scale));
+		rect.setOrigin(size * scale / 2, size * scale / 2);
+		rect.setPosition(position.x * scale, position.y * scale);
 		//rect.setPosition(position.x - size / 2, position.y - size / 2);
 		rect.setFillColor(sf::Color::Transparent);
-		rect.setOutlineColor(sf::Color::Transparent);
+		rect.setOutlineColor(sf::Color::Green);
 		rect.setOutlineThickness(1.0f);
 		if (!empty) {
 			rect.setOutlineColor(sf::Color::Blue);
@@ -132,8 +129,26 @@ public:
 		targetWindow.draw(rect);
 		if (hasChildren())
 			for (auto child : children) {
-				child->draw(targetWindow);
+				child->draw(scale, targetWindow);
 			}
+	}
+	//queries
+
+	void _getCOM(vec2f outpos, float outmass, int count) {
+		if (hasChildren()) {
+			for (Node* const& child : children)
+				child->_getCOM(outpos, outmass, count);
+		}
+		else if (!empty) {
+			outpos += data->position;
+			outmass += data->mass;
+			count += 1;
+		}
+	}
+	void getCOM(vec2f outpos, float outmass) {
+		int count = 0;
+		_getCOM(outpos, outmass, count);
+		outpos /= count;
 	}
 };
 
