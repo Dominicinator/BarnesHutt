@@ -1,6 +1,20 @@
 #pragma once
 #include "Vector.h"
 #include "SFML/Graphics.hpp"
+
+template<typename DataType>
+struct CoM {
+public:
+	vec2f position;
+	float mass;
+	CoM<DataType>();
+	CoM<DataType>(vec2f position, float mass);
+	CoM<DataType>(DataType* const& dataArray, int length);
+
+	void update(DataType* const& data, int count);
+};
+	
+
 template<typename DataType>
 class Node
 {
@@ -68,6 +82,8 @@ public:
 					if (child->contains(b))
 						child->insert(b);
 				}
+				//https://stackoverflow.com/questions/11074665/calculate-cumulative-average-mean
+				//TODO: calculate COM here
 				empty = true;
 			}
 		}
@@ -133,7 +149,7 @@ public:
 			}
 	}
 	//queries
-
+	//Performance hinderance:
 	void _getCOM(vec2f outpos, float outmass, int count) {
 		if (hasChildren()) {
 			for (Node* const& child : children)
@@ -152,3 +168,27 @@ public:
 	}
 };
 
+template<typename DataType>
+CoM<DataType>::CoM() :
+	position(vec2f()), mass(0.0f) {}
+
+template<typename DataType>
+CoM<DataType>::CoM(vec2f position, float mass)
+	: position(position), mass(mass) {}
+
+template<typename DataType>
+CoM<DataType>::CoM(DataType * const & dataArray, int length)
+{
+	position = vec2f();
+	mass = 0.0f;
+	for (int i = 0; i < length; ++i) {
+		position += dataArray[i].position;
+		mass += dataArray[i].mass;
+	}
+	position /= length;
+}
+
+template<typename DataType>
+void CoM<DataType>::update(DataType * const & data, int count)
+{
+}
