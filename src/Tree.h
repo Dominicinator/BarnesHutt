@@ -65,6 +65,9 @@ public:
 		}
 	}
 	void fit(Particle* const& particles, int nParticles) {
+		//for (int i = 0; i < nParticles; ++i) {
+			//particles[i].print();
+		//}
 		vec2f center = vec2f();
 		float magMax = 0;
 		for (int i = 0; i < nParticles; i++) {
@@ -75,8 +78,8 @@ public:
 			float mag = (particles[i].position - center).mag();
 			magMax =  mag > magMax ? mag : magMax;
 		}
-		rootPos = center;
-		rootSize = magMax;
+		//std::cout << "Center:" << center << std::endl;
+		//std::cout << "Size: " << magMax * 2 << std::endl;
 		root->position = center;
 		root->size = magMax*2;
 	}

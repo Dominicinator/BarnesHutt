@@ -191,11 +191,13 @@ vec2f vec2f::random(float lower, float higher)
 	float y_ = lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower)));
 	return vec2f(x_, y_);
 }
-std::ostream& operator<<(std::ostream& stream, const vec2f & v) {
+std::ostream & operator<<(std::ostream & stream, const vec2f & v)
+{
 	stream << "(" << v.x << ", " << v.y << ")";
 	return stream;
 }
-std::ostream& operator<<(std::ostream& stream, const vec3f & v) {
+std::ostream & operator<<(std::ostream & stream, const vec3f & v)
+{
 	stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
 	return stream;
 }

@@ -68,4 +68,5 @@ struct vec2f {
 	const float mag() const;
 	static vec2f random(float lower, float higher);
 };
-
+std::ostream& operator<<(std::ostream& stream, const vec2f & v);
+std::ostream& operator<<(std::ostream& stream, const vec3f & v);

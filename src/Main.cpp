@@ -1,6 +1,5 @@
 #include <iostream>
-#include "Simulation.h"
-#include "Tree.h"
+#include "World.h"
 /*struct Particle {
 	vec2f position;
 	vec2f velocity;
@@ -19,20 +18,74 @@
 	}
 };*/
 int main() {
+	World world(1E12f, 1E20, 1E22, 500, 2000.0f);
+	world.scale = 1e-7f;
 	float windowWidth = 800.0f;
 	float windowHeight = 800.0f;
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Title");
 	sf::Event event;
+	bool panning = false;
+	sf::Vector2f panStart(0.0f, 0.0f);
+	sf::Vector2f cameraPosition(0.0f, 0.0f);
+	sf::View view(cameraPosition, sf::Vector2f(windowWidth, windowHeight));
 	while (window.isOpen()) {
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+					std::cout << "wheel type: vertical" << std::endl;
+				else if (event.mouseWheelScroll.wheel == sf::Mouse::HorizontalWheel)
+					std::cout << "wheel type: horizontal" << std::endl;
+				else
+					std::cout << "wheel type: unknown" << std::endl;
+
+				std::cout << "wheel movement: " << event.mouseWheelScroll.delta << std::endl;
+				//std::cout << "mouse x: " << event.mouseWheelScroll.x << std::endl;
+				//std::cout << "mouse y: " << event.mouseWheelScroll.y << std::endl;
+				int delta = event.mouseWheelScroll.delta;
+				if (delta > 0)
+				{
+					world.scale *= 1.05f;
+					cameraPosition *= 1.05f;
+					view.setCenter(cameraPosition);
+				}
+				else if (delta < 0) {
+					world.scale *= 0.95f;
+					cameraPosition *= 0.95f;
+					view.setCenter(cameraPosition);
+				}
+			}
+			if (event.type == sf::Event::MouseButtonPressed) {
+				if (event.mouseButton.button == sf::Mouse::Left) {
+					panning = true;
+					sf::Vector2f mouse = (sf::Vector2f)sf::Mouse::getPosition(window);
+					cameraPosition = view.getCenter();
+					panStart.x = mouse.x;// + cameraPosition.x - windowWidth/2;
+					panStart.y = mouse.y;
+					std::cout << panStart.x << ", " << panStart.y << std::endl;
+				}
+			}
+			if (event.type == sf::Event::MouseButtonReleased) {
+				if (event.mouseButton.button == sf::Mouse::Left) {
+					cameraPosition = view.getCenter();
+					panning = false;
+				}
+			}
 		}
+		if (panning) {
+			sf::Vector2f mouse = (sf::Vector2f)sf::Mouse::getPosition(window);
+			sf::Vector2f delta = (panStart - mouse);
+			view.setCenter(cameraPosition + delta);
+		}
+		//sf::Vector2f mouse = (sf::Vector2f)sf::Mouse::getPosition(window);
+		//std::cout << mouse.x - windowWidth/2 << "," << mouse.y - windowHeight/2 << std::endl;
+		window.setView(view);
 		window.clear(sf::Color::Black);
 
-		sf::CircleShape circle(50.0f);
-		circle.setOrigin(50.0f, 50.0f);
-		window.draw(circle);
+		world.update();
+		world.draw(window);
 
 		window.display();
 	}

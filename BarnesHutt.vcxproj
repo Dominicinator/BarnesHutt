@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\vector.cpp" />
     <ClCompile Include="src\World.cpp" />
   </ItemGroup>
