@@ -1,60 +1,45 @@
 #include <iostream>
-#include <GL/glew.h>
 #include "Simulation.h"
-#include <GLFW/glfw3.h>
-
-//int main() {
-//	Simulation sim(1E9f, 1E20, 1E22, 50, 1000.0f);
-//	std::cout << sim.bodies[0].position << std::endl;
-//	sim.step();
-//	std::cout << sim.bodies[0].position << std::endl;
-//	std::cin.get();
-//};
-int main(void)
-{
-	GLFWwindow* window;
-
-	/* Initialize the library */
-	if (!glfwInit())
-		return -1;
-	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		return -1;
-	}
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-	if (glewInit() != GLEW_OK)
-		std::cout << "Error!" << std::endl;
-	/* Loop until the user closes the window */
-	int positions[6] = {
-		-0.5f, -0.5f,
-		 0.0f,  0.5f,
-		 0.5f, -0.5f
-	};
-	unsigned int buffer;
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
-	glEnableVertexAttribArray(0);
-	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
-	while (!glfwWindowShouldClose(window))
-	{
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
-	return 0;
+#include <SFML/Graphics.hpp>
+inline float map(const float& a, const float& b, const float& c, const float& d, const float& x) {
+	return (x - a) * (d - c) / (d - a) + c;
 }
+int main() {
+	Simulation sim(1E9f, 1E20, 1E22, 2, 1000.0f);
+	std::cout << sim.bodies[0].position << std::endl;
+	sim.step();
+	std::cout << sim.bodies[0].position << std::endl;
+	sim.step();
+	//std::cin.get();
+	float windowWidth = 800;
+	float windowHeight = 800;
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Title");
+
+	sf::Event event;
+
+	//sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(800.0f, 800.0f));
+
+	while (window.isOpen()) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+		sim.step();
+		window.clear(sf::Color::Black);
+		for (int i = 0; i < sim.nBodies; ++i) {
+			sf::Vector2f windowPos = sf::Vector2f(sim.bodies[i].position.x, sim.bodies[i].position.y);
+			float x = map(-sim.posRange, sim.posRange, 0.0f, windowWidth, sim.bodies[i].position.x);
+			float y = map(-sim.posRange, sim.posRange, 0.0f, windowWidth, sim.bodies[i].position.y);
+			sf::CircleShape planetShape(100.0f);
+			//planetShape.setPosition(0.0f, 0.0f);
+			//planetShape.setPosition(x, y);
+			if (i == 0)
+				std::cout << x << std::endl;
+			//std::cout << y << std::endl;
+			planetShape.setFillColor(sf::Color(0, 255, 0));
+			window.draw(planetShape);
+		}
+		window.display();
+	}
+	return 0;
+};

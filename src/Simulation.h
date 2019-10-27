@@ -21,17 +21,18 @@ struct Particle {
 };
 struct Body : Particle {
 	vec2f velocity;
+	float radius = 1.0f;
 	//template<typename T>
 	void update(Tree::BHtree<Particle> tree, float deltaTime) {
 		vec2f a1 = tree.getAcceleration(position);
-		std::cout << "pos: " << position << std::endl;
+		//std::cout << "pos: " << position << std::endl;
 		position = position + velocity * deltaTime + a1 * 0.5f*deltaTime*deltaTime;
-		std::cout << "pos: " << position << std::endl;
+		//std::cout << "pos: " << position << std::endl;
 		vec2f a2 = tree.getAcceleration(position);
-		std::cout << "vel: " << velocity << std::endl;
+		//std::cout << "vel: " << velocity << std::endl;
 		velocity = velocity + (a1 + a2)*0.5f*deltaTime;
-		std::cout << "vel: " << velocity << std::endl;
-		std::cout << "a1: " << a1 << "a2: " << a2 << std::endl;
+		//std::cout << "vel: " << velocity << std::endl;
+		//std::cout << "a1: " << a1 << "a2: " << a2 << std::endl;
 	}
 };
 //template <int nBodies>
@@ -57,7 +58,7 @@ public:
 	}
 	void step() {
 		tree.fill(bodies, nBodies);
-		for (int i = 0; i < nBodies; i++) {
+		for (int i = 0; i < nBodies; ++i) {
 			typedef Tree::BHtree<Particle> QT;
 			bodies[i].update(tree, deltaTime);
 		}
