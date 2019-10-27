@@ -41,8 +41,15 @@
     <ClInclude Include="src\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\maybeuse.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="src\arial.ttf" />
+    <Font Include="src\arial_narrow_7.ttf" />
   </ItemGroup>
 </Project>

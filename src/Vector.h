@@ -68,3 +68,4 @@ struct vec2f {
 	const float mag() const;
 	static vec2f random(float lower, float higher);
 };
+

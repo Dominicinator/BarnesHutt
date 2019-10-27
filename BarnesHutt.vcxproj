@@ -157,10 +157,15 @@
     <ClInclude Include="src\Node.h" />
     <ClInclude Include="src\BarnesHuttTree.old" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\Tree.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\maybeuse.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="src\arial.ttf" />
+    <Font Include="src\arial_narrow_7.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
