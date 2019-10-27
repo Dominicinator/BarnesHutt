@@ -106,5 +106,5 @@ void Simulation::draw(float scale, sf::RenderWindow & targetWindow) {
 	for (int i = 0; i < nBodies; ++i) {
 		bodies[i].draw(scale, scale, targetWindow);
 	}
-	//tree.root->draw(scale, targetWindow);
+	tree.root->draw(scale, targetWindow);
 }
