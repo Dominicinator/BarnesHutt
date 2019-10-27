@@ -81,7 +81,7 @@ struct vec3f {
 		return x * x + y * y + z * z;
 	}
 	const float mag() const {
-		return std::sqrt(x*x + y * y + z * z);
+		return std::sqrt(x * x + y * y + z * z);
 	}
 	static vec3f random(float lower, float higher) {
 		return vec3f(lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower))),
@@ -164,7 +164,7 @@ struct vec2f {
 		return x * x + y * y;
 	}
 	const float mag() const {
-		return std::sqrt(x*x + y * y);
+		return std::sqrt(x * x + y * y);
 	}
 	static vec2f random(float lower, float higher) {
 		float x_ = lower + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (higher - lower)));

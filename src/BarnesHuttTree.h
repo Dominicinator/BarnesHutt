@@ -46,15 +46,22 @@ namespace Tree {
 		}
 		bool contains(const vec2f& p) {
 			//true if abs(x2-x1) < size && abs(y2 - y1) < size (ie within square)
+			std::cout << "contains: " << (position - p).abs() << std::endl;
 			return (((position - p).abs()).less2d(size));
 		}
 		bool contains(Particle* const& b) {
 			//true if abs(x2-x1) < size && abs(y2 - y1) < size (ie within square)
+			std::cout << "nodepos: " << position << std::endl;
+			std::cout << "particlepos: " << b->position << std::endl;
+			std::cout << "contains: " << (position - b->position).abs() << std::endl;
 			return (((position - b->position).abs()).less2d(size));
 		}
 		void subdivide() {
+			std::cout << "Subdivide->position: " << position << std::endl;
+			std::cout << "Subdivide->size: " << size << std::endl;
 			//NW
 			children[0] = new Node<Particle>(this, position - vec2f(-size / 2, size / 2), size / 2);
+			//std::cout << "NW pos: " << position - vec2f(-size / 2, size / 2) << std::endl;
 			//NE
 			children[1] = new Node<Particle>(this, position - vec2f(size / 2, size / 2), size / 2);
 			//SW
@@ -66,9 +73,11 @@ namespace Tree {
 			if (!hasParticle()) {
 				if (!hasChildren()) {
 					particle = b;
+					std::cout << "inserting " << b << " into empty node " << this << std::endl;
 				}
 				else {
 					for (Node<Particle>*& child : children) {
+						std::cout << "Inserting " << b << " into children nodes." << std::endl;
 						if (child->contains(b))
 							child->insert(b);
 					}
@@ -76,13 +85,21 @@ namespace Tree {
 			}
 			else {
 				if (!hasChildren()) {
+					std::cout << "Subdividing " << this << " and ";
 					subdivide();
 				}
+				std::cout << "inserting " << b << " and " << particle << " into children nodes." << std::endl;
 				for (Node<Particle>* child : children) {
-					if (child->contains(b))
+					if (child->contains(b)) {
+						std::cout << child << " contains " << b << ";";
 						child->insert(b);
-					if (child->contains(particle))
+						
+					}
+					if (child->contains(particle)) {
+						std::cout << child << " contains " << particle << ";";
 						child->insert(particle);
+					}
+					std::cout << child << " does not contain " << b << " or " << particle << std::endl;
 				}
 				particle = nullptr;
 			}
@@ -182,15 +199,23 @@ namespace Tree {
 		void fit(Particle* const& particles, int nParticles) {
 			vec2f center = vec2f();
 			float magMax = 0;
-			for (int i = 0; i < nParticles; i++) {
+			for (int i = 0; i < nParticles; ++i) {
 				center += particles[i].position;
 			}
 			center /= (const float&)nParticles;
-			for (int i = 0; i < nParticles; i++) {
-				magMax = particles[i].position.mag() > magMax ? particles[i].position.mag() : magMax;
+			for (int i = 0; i < nParticles; ++i) {
+				float mag = particles[i].position.mag();
+				if (mag > magMax) {
+					std::cout << "------mag:" << mag << std::endl;
+					std::cout << "------magcalc: " << particles[i].position.y*particles[i].position.y << std::endl;
+					std::cout << "------pos:" << particles[i].position << std::endl;
+					magMax = mag;
+				}
+				//magMax = particles[i].position.mag() > magMax ? particles[i].position.mag() : magMax;
 			}
-			rootPos = center;
-			rootSize = magMax;
+			//rootPos = center;
+			//rootSize = magMax;
+			std::cout << "Fit size:" << magMax << std::endl;
 			root->position = center;
 			root->size = magMax;
 		}
@@ -203,8 +228,10 @@ namespace Tree {
 		const vec2f _getAcceleration(Tree::Node<Particle>* const& node, const vec2f& pos) const {
 
 			if (!node->hasChildren()) {//node is external
-				if (node->particle == NULL) //external node is empty
+				if (node->particle == NULL) { //external node is empty
+					//std::cout << "Empty external" << std::endl;
 					return vec2f();//return 0, 0
+				}
 				else { //external node is not empty
 					if (node->particle->position == pos) {
 						return vec2f();
