@@ -6,16 +6,17 @@ struct Particle {
 };
 	
 int main() {
-	vec2f vector = vec2f();
-	Node<Particle> node(vec2f(0, 0), 100.0f);
+	Node<Particle> node(vec2f(0.0f, 0.0f), 100.0f);
 	sf::RenderWindow window(sf::VideoMode(800, 800), "Title");
 	sf::Event event;
+	sf::View view(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(800.0f, 800.0f));
 	while (window.isOpen()) {
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
 		window.clear(sf::Color::Black);
+		window.setView(view);
 		node.draw(window);
 		window.display();
 	}

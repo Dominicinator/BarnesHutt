@@ -24,9 +24,6 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Node.cpp">
-      <Filter>Tree</Filter>
-    </ClCompile>
     <ClCompile Include="src\vector.cpp">
       <Filter>vector</Filter>
     </ClCompile>
@@ -35,14 +32,14 @@
     <ClInclude Include="src\Simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Node.h">
-      <Filter>Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BarnesHuttTree.hold">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Vector.h">
       <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BarnesHuttTree.old">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Node.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -150,13 +150,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Node.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Node.h" />
-    <ClInclude Include="src\BarnesHuttTree.hold" />
+    <ClInclude Include="src\BarnesHuttTree.old" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
